@@ -1,0 +1,25 @@
+#!/bin/bash
+
+save_cursor="\033[s"
+load_cursor="\033[u"
+move_cursor_100_spaces="\033[100C"
+
+function loading_bar_with_number_at_end(){
+    total_even_count=$1
+    reduce_by=$2
+    bar_length=$(( 100 / $reduce_by ))
+    event_count=0
+    bar=""
+    printf "$save_cursor"
+    while [ $event_count -lt $total_even_count ]; do
+        sleep .5
+        if [ $(( $(( $event_count * $bar_length )) / $total_even_count )) -lt $bar_length ]; then
+            bar="$bar#"
+        fi
+        printf "$load_cursor $bar$load_cursor $move_cursor_100_spaces $(( ($event_count * 100 ) % $total_even_count ))%%"
+        event_count=$(( event_count + 1 ))
+    done
+    printf "\n"
+}
+
+loading_bar_with_number_at_end 100 2
